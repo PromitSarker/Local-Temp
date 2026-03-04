@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, isWithinInterval, parseISO } from 'date-fns';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, isWithinInterval, parseISO, format } from 'date-fns';
 
 export interface LocumStats {
   upcomingShifts: number;
@@ -75,10 +75,12 @@ export const useLocumDashboard = () => {
       if (bookings) {
         bookings.forEach(b => {
           const bDate = parseISO(b.date);
-          const start = parseInt(b.start_time.split(':')[0]);
-          const end = parseInt(b.end_time.split(':')[0]);
-          const hours = end > start ? end - start : (end + 24) - start;
-          const shiftEarnings = b.hourly_rate * (hours || 8);
+          const [sh, sm] = b.start_time.split(':').map(Number);
+          const [eh, em] = b.end_time.split(':').map(Number);
+          let durationMins = (eh * 60 + em) - (sh * 60 + sm);
+          if (durationMins < 0) durationMins += 24 * 60;
+          const hours = durationMins / 60;
+          const shiftEarnings = b.hourly_rate * hours;
 
           // Monthly earnings (completed/confirmed paid)
           if (isWithinInterval(bDate, { start: monthStart, end: monthEnd })) {
@@ -91,7 +93,7 @@ export const useLocumDashboard = () => {
           if (isWithinInterval(bDate, { start: weekStart, end: weekEnd })) {
             if (b.status === 'confirmed' || b.status === 'completed') {
               hoursThisWeek += hours;
-              const dayName = bDate.toLocaleDateString('en-GB', { weekday: 'short' });
+              const dayName = format(bDate, 'EEE');
               if (weekEarningsByDay[dayName] !== undefined) {
                 weekEarningsByDay[dayName] += shiftEarnings;
               }

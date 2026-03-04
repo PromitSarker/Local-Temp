@@ -32,7 +32,7 @@ export function LocumProfileDialog({
         <DialogHeader className="p-6 pb-4 bg-emerald-50/50 border-b">
           <div className="flex items-start gap-4">
             <div className="w-16 h-16 rounded-full bg-emerald-700 flex items-center justify-center text-white text-2xl font-bold">
-              {profile ? profile.fullName.split(" ").map(n => n[0]).join("") : <User className="w-8 h-8" />}
+              {profile?.fullName ? profile.fullName.split(" ").map(n => n[0]).join("") : <User className="w-8 h-8" />}
             </div>
             <div className="flex-1">
               <DialogTitle className="text-2xl font-bold text-emerald-900">

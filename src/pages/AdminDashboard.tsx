@@ -54,10 +54,11 @@ function Sidebar({
     { id: "support", label: "Support", icon: LifeBuoy },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem("adminAuthenticated");
     localStorage.removeItem("adminEmail");
-    navigate("/");
+    navigate("/login");
   };
 
   return (

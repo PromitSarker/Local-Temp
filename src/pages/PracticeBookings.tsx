@@ -19,8 +19,6 @@ import { useTickets } from "@/hooks/useTickets";
 import { PracticeHeader } from "@/components/practice/PracticeHeader";
 
 
-
-
 type BookingStatus = "confirmed" | "pending" | "completed" | "cancelled" | "rejected";
 
 
@@ -36,7 +34,7 @@ interface PracticeBooking {
   location: string;
   cost: string;
   paymentStatus: 'pending' | 'paid' | 'released' | 'refunded' | 'held' | 'disputed';
-  locumId: string; // Added for review
+  locumId: string;
 }
 
 const tabs = ["Active Bookings", "History", "Calendar View"] as const;
@@ -229,7 +227,8 @@ export default function PracticeBookings() {
     URL.revokeObjectURL(url);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     navigate("/login");
   };
 
@@ -242,12 +241,11 @@ export default function PracticeBookings() {
 
   const handleMarkComplete = async (bookingId: string) => {
     try {
-        // Just update status to 'held' to start the review period
         const { error } = await supabase
             .from('bookings')
             .update({ 
                 status: 'completed',
-                payment_status: 'held', // @ts-ignore
+                payment_status: 'held',
                 completed_at: new Date().toISOString()
             } as any)
             .eq('id', bookingId);
@@ -259,7 +257,6 @@ export default function PracticeBookings() {
             description: "Funds are now held for a 24-hour review period.",
         });
 
-        // Update local state
         setBookings(prev => prev.map(b => 
             b.id === bookingId ? { ...b, status: 'completed' as BookingStatus, paymentStatus: 'held' } : b
         ));
@@ -308,7 +305,6 @@ export default function PracticeBookings() {
 
   
   const handlePayNow = (booking: PracticeBooking) => {
-    // Calculate total amount
     const costNumber = parseFloat(booking.cost.replace('£', ''));
     
     setSelectedBookingForPayment({
@@ -322,7 +318,6 @@ export default function PracticeBookings() {
   };
   
   const handlePaymentSuccess = () => {
-    // Refetch bookings to update UI
     setBookings(prev => prev.map(b => 
       b.id === selectedBookingForPayment?.id 
         ? { ...b, paymentStatus: 'paid' as const }
@@ -334,7 +329,6 @@ export default function PracticeBookings() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Refund Request Dialog */}
       <Dialog open={!!refundBookingId} onOpenChange={(open) => !open && setRefundBookingId(null)}>
         <DialogContent>
           <DialogHeader>
@@ -365,7 +359,6 @@ export default function PracticeBookings() {
 
       <PracticeSidebar onLogout={handleLogout} />
 
-      {/* Mobile Menu */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-64">
           <PracticeSidebar onLogout={handleLogout} isMobileSheet={true} />
@@ -595,7 +588,6 @@ export default function PracticeBookings() {
         />
       )}
       
-      {/* Payment Modal */}
       {paymentModalOpen && selectedBookingForPayment && (
         <PaymentModal
           isOpen={paymentModalOpen}

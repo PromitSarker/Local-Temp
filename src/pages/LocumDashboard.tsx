@@ -24,7 +24,7 @@ export default function LocumDashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/");
+    navigate("/login");
   };
 
   return (

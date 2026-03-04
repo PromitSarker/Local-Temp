@@ -18,18 +18,14 @@ export default function PracticePayments() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
-  const handleLogout = () => {
-    navigate("/auth");
-  };
-
   return (
     <div className="min-h-screen bg-background">
-      <PracticeSidebar onLogout={handleLogout} />
+      <PracticeSidebar onLogout={() => navigate("/login")} />
 
       {/* Mobile Menu */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-64">
-          <PracticeSidebar onLogout={handleLogout} isMobileSheet={true} />
+          <PracticeSidebar onLogout={() => navigate("/login")} isMobileSheet={true} />
         </SheetContent>
       </Sheet>
 

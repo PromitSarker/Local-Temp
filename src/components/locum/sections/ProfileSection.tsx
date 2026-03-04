@@ -224,7 +224,7 @@ export function ProfileSection({
           <Card className="p-6">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold">Personal Information</h3>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => setIsEditingPersonal(true)}>
                 Edit
               </Button>
             </div>
@@ -242,7 +242,7 @@ export function ProfileSection({
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col gap-2">
-                <Button variant="outline" className="w-fit">
+                <Button variant="outline" className="w-fit" onClick={() => toast({ title: "Coming Soon", description: "Profile photo upload will be available shortly." })}>
                   <Upload className="w-4 h-4 mr-2" /> Upload Photo
                 </Button>
                 <p className="text-xs text-muted-foreground">

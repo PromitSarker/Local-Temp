@@ -320,7 +320,7 @@ export default function PublicSearch() {
                       <Button 
                         size="sm"
                         variant="default" 
-                        onClick={() => navigate("/auth")} 
+                        onClick={() => navigate("/login")} 
                         className="flex-1 h-9 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium shadow-sm transition-colors"
                       >
                         Book Now
@@ -351,10 +351,10 @@ export default function PublicSearch() {
               Join our network of locums and find flexible work that fits your schedule. Sign up today and start earning more.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="secondary" size="lg" className="h-14 px-8 text-lg font-bold" onClick={() => navigate("/auth")}>
+              <Button variant="secondary" size="lg" className="h-14 px-8 text-lg font-bold" onClick={() => navigate("/login")}>
                 Sign Up as a Locum
               </Button>
-              <Button variant="outline" size="lg" className="h-14 px-8 text-lg font-bold bg-transparent border-primary-foreground/30 hover:bg-primary-foreground/10" onClick={() => navigate("/auth")}>
+              <Button variant="outline" size="lg" className="h-14 px-8 text-lg font-bold bg-transparent border-primary-foreground/30 hover:bg-primary-foreground/10" onClick={() => navigate("/login")}>
                 <LogIn className="w-5 h-5 mr-2" />
                 Log In
               </Button>

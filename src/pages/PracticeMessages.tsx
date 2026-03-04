@@ -65,6 +65,11 @@ export default function PracticeMessages() {
     sendMessage,
   } = useMessages();
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
+
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedName, setSelectedName] = useState<string>("");
   const [messageInput, setMessageInput] = useState("");
@@ -140,11 +145,11 @@ export default function PracticeMessages() {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <PracticeSidebar onLogout={() => navigate("/")} />
+      <PracticeSidebar onLogout={handleLogout} />
 
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-64">
-          <PracticeSidebar onLogout={() => navigate("/")} isMobileSheet={true} />
+          <PracticeSidebar onLogout={handleLogout} isMobileSheet={true} />
         </SheetContent>
       </Sheet>
 

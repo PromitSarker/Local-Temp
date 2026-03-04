@@ -311,7 +311,8 @@ export default function PracticeSettings() {
     fetchData();
   }, [fetchData]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     navigate("/login");
   };
 

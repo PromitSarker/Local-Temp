@@ -251,14 +251,19 @@ export default function FindLocums() {
     appliedFilters.specialty !== "all",
   ].filter(Boolean).length;
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      <PracticeSidebar onLogout={() => navigate("/")} />
+    <div className="min-h-screen bg-background flex">
+      <PracticeSidebar onLogout={handleLogout} />
 
       {/* Mobile Menu */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-64">
-          <PracticeSidebar onLogout={() => navigate("/")} isMobileSheet={true} />
+          <PracticeSidebar onLogout={handleLogout} isMobileSheet={true} />
         </SheetContent>
       </Sheet>
 
