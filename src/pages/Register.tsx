@@ -104,19 +104,47 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNextStep = (e: React.FormEvent) => {
+  const handleNextStep = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateStep1()) return;
 
-    setCurrentStep("verification");
-    toast({
-      title: "Verification codes sent",
-      description: "We've sent verification codes to your email and phone.",
-    });
+    try {
+      // Send both OTPs
+      const [emailRes, phoneRes] = await Promise.all([
+        supabase.functions.invoke('send-registration-otp', {
+          body: { identifier: formData.email, type: 'email' }
+        }),
+        supabase.functions.invoke('send-registration-otp', {
+          body: { identifier: formData.phone, type: 'phone' }
+        })
+      ]);
+
+      if (emailRes.error || phoneRes.error) {
+        throw new Error(emailRes.error?.message || phoneRes.error?.message || 'Failed to send verification codes');
+      }
+
+      const emailCode = emailRes.data?.code;
+      const phoneCode = phoneRes.data?.code;
+
+      setCurrentStep("verification");
+      toast({
+        title: "Verification codes sent",
+        description: `Codes: Email [${emailCode}] | Phone [${phoneCode}] (Development mode)`,
+        duration: 20000, // Display longer for testing
+      });
+
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send verification codes. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleVerifyEmail = () => {
+
+  const handleVerifyEmail = async () => {
     if (emailOtp.length !== 6) {
       toast({
         title: "Invalid code",
@@ -127,18 +155,31 @@ const Register = () => {
     }
 
     setVerifyingEmail(true);
-    // Simulate verification - in production this would call an API
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-registration-otp', {
+        body: { identifier: formData.email, type: 'email', code: emailOtp }
+      });
+
+      if (error) throw error;
+
       setEmailVerified(true);
-      setVerifyingEmail(false);
       toast({
         title: "Email verified",
         description: "Your email has been verified successfully.",
       });
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        title: "Verification Failed",
+        description: error.message || "Invalid or expired verification code.",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifyingEmail(false);
+    }
   };
 
-  const handleVerifyPhone = () => {
+
+  const handleVerifyPhone = async () => {
     if (phoneOtp.length !== 6) {
       toast({
         title: "Invalid code",
@@ -149,16 +190,29 @@ const Register = () => {
     }
 
     setVerifyingPhone(true);
-    // Simulate verification - in production this would call an API
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-registration-otp', {
+        body: { identifier: formData.phone, type: 'phone', code: phoneOtp }
+      });
+
+      if (error) throw error;
+
       setPhoneVerified(true);
-      setVerifyingPhone(false);
       toast({
         title: "Phone verified",
         description: "Your phone number has been verified successfully.",
       });
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        title: "Verification Failed",
+        description: error.message || "Invalid or expired verification code.",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifyingPhone(false);
+    }
   };
+
 
   const handleCompleteRegistration = async () => {
     if (!emailVerified || !phoneVerified) {
@@ -234,12 +288,15 @@ const Register = () => {
       return;
     }
 
+    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?type=${selectedType}`,
+        redirectTo: `${baseUrl}/auth/callback?type=${selectedType}`,
       },
     });
+
 
     if (error) {
       toast({
@@ -250,12 +307,32 @@ const Register = () => {
     }
   };
 
-  const handleResendCode = (type: "email" | "phone") => {
-    toast({
-      title: "Code resent",
-      description: `A new verification code has been sent to your ${type}.`,
-    });
+  const handleResendCode = async (type: "email" | "phone") => {
+    try {
+      const identifier = type === "email" ? formData.email : formData.phone;
+      const { data, error } = await supabase.functions.invoke('send-registration-otp', {
+        body: { identifier, type }
+      });
+
+      if (error) throw error;
+
+      const newCode = data?.code;
+
+      toast({
+        title: "Code resent",
+        description: `A new verification code [${newCode}] has been sent to your ${type}.`,
+        duration: 20000,
+      });
+
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: `Failed to resend ${type} verification code.`,
+        variant: "destructive",
+      });
+    }
   };
+
 
   // Role selection screen
   if (currentStep === "select") {
