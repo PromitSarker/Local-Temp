@@ -37,18 +37,29 @@ export function Sidebar({ className }: SidebarProps) {
   ];
 
   return (
-    <div className={cn("pb-12 w-64 border-r bg-card min-h-screen", className)}>
+    <div className={cn("pb-12 w-64 border-r bg-primary text-white min-h-screen shadow-lg", className)}>
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-            Admin Portal
-          </h2>
+          <div className="flex items-center gap-3 px-4 mb-6">
+            <div className="bg-primary-light rounded w-8 h-8 flex items-center justify-center font-bold text-white shadow-sm">
+              L
+            </div>
+            <div>
+              <div className="text-sm font-bold">Local Temp</div>
+              <div className="text-xs opacity-75">Admin Panel</div>
+            </div>
+          </div>
           <div className="space-y-1">
             {routes.map((route) => (
               <Link key={route.href} to={route.href}>
                 <Button
-                  variant={route.active ? "secondary" : "ghost"}
-                  className="w-full justify-start"
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start transition-all",
+                    route.active 
+                      ? "bg-white text-primary font-semibold hover:bg-white hover:text-primary" 
+                      : "text-white hover:bg-primary-light hover:text-white"
+                  )}
                 >
                   <route.icon className="mr-2 h-4 w-4" />
                   {route.label}
@@ -59,7 +70,7 @@ export function Sidebar({ className }: SidebarProps) {
         </div>
       </div>
       <div className="px-3 py-2 mt-auto absolute bottom-0 w-64">
-           <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50">
+           <Button variant="ghost" className="w-full justify-start text-white/80 hover:text-white hover:bg-primary-light">
                <LogOut className="mr-2 h-4 w-4" />
                Logout
            </Button>

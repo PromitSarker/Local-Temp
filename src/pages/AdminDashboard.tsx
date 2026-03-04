@@ -72,11 +72,11 @@ function Sidebar({
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-40 bg-gradient-to-b from-green-700 to-green-800 text-white p-6 transform transition-transform lg:transform-none z-50 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+        className={`fixed left-0 top-0 h-screen w-40 bg-primary text-white p-6 transform transition-transform lg:transform-none z-50 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 shadow-lg`}
       >
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
-            <div className="bg-green-600 rounded w-8 h-8 flex items-center justify-center font-bold">
+            <div className="bg-primary-light rounded w-8 h-8 flex items-center justify-center font-bold">
               L
             </div>
             <div>
@@ -101,8 +101,8 @@ function Sidebar({
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left ${
                   activeSection === item.id
-                    ? "bg-white text-green-700 font-semibold"
-                    : "text-white hover:bg-green-600"
+                    ? "bg-white text-primary font-semibold"
+                    : "text-white hover:bg-primary-light"
                 }`}
                 title={item.label}
               >
@@ -118,7 +118,7 @@ function Sidebar({
         <div className="absolute bottom-6 left-6 right-6 space-y-2">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-4 py-3 text-white hover:bg-green-600 rounded-lg transition-all"
+            className="w-full flex items-center gap-2 px-4 py-3 text-white hover:bg-primary-light rounded-lg transition-all"
           >
             <LogOut size={20} />
             <span className="text-sm">Logout</span>
@@ -158,7 +158,7 @@ function DashboardPage({ stats, activities, revenueTrends, loading }) {
   if (loading) {
     return (
       <div className="p-6 flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -181,11 +181,11 @@ function DashboardPage({ stats, activities, revenueTrends, loading }) {
               <p className="text-3xl font-bold text-gray-900">{stats.totalBookings}</p>
               <p className="text-xs text-gray-500 mt-2">All time</p>
             </div>
-            <div className="bg-green-100 rounded-lg p-3">
+            <div className="bg-primary/10 rounded-lg p-3">
               <div className="text-2xl">📊</div>
             </div>
           </div>
-          <div className="text-xs text-green-600">Real-time status</div>
+          <div className="text-xs text-primary">Real-time status</div>
         </div>
 
         {/* Total Revenue Card */}
@@ -196,11 +196,11 @@ function DashboardPage({ stats, activities, revenueTrends, loading }) {
               <p className="text-3xl font-bold text-gray-900">£{stats.totalRevenue.toLocaleString()}</p>
               <p className="text-xs text-gray-500 mt-2">Platform total</p>
             </div>
-            <div className="bg-green-100 rounded-lg p-3">
+            <div className="bg-primary/10 rounded-lg p-3">
               <div className="text-2xl">💰</div>
             </div>
           </div>
-          <div className="text-xs text-green-600">Platform earnings</div>
+          <div className="text-xs text-primary">Platform earnings</div>
         </div>
 
         {/* Pending Payouts Card */}
@@ -243,15 +243,15 @@ function DashboardPage({ stats, activities, revenueTrends, loading }) {
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-green-100 rounded-full w-10 h-10 flex items-center justify-center">
-                  <span className="text-green-700 font-bold">L</span>
+                <div className="bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center">
+                  <span className="text-primary font-bold">L</span>
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900">Total Locums</p>
                 </div>
                 <p className="text-2xl font-bold text-gray-900">{stats.activeLocums}</p>
               </div>
-              <p className="text-xs text-green-600 ml-12">
+              <p className="text-xs text-primary ml-12">
                 ↑ Registered professionals
               </p>
             </div>
@@ -272,15 +272,15 @@ function DashboardPage({ stats, activities, revenueTrends, loading }) {
             </div>
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-green-100 rounded-full w-10 h-10 flex items-center justify-center">
-                  <span className="text-green-700 font-bold">P</span>
+                <div className="bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center">
+                  <span className="text-primary font-bold">P</span>
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900">Total Practices</p>
                 </div>
                 <p className="text-2xl font-bold text-gray-900">{stats.activePractices}</p>
               </div>
-              <p className="text-xs text-green-600 ml-12">
+              <p className="text-xs text-primary ml-12">
                 ↑ Active registrations
               </p>
             </div>
@@ -311,7 +311,7 @@ function DashboardPage({ stats, activities, revenueTrends, loading }) {
                 >
                   <div
                     className={`rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 ${
-                      activity.type === "success" ? "bg-green-100" : "bg-blue-100"
+                      activity.type === "success" ? "bg-primary/10 text-primary" : "bg-blue-100 text-blue-700"
                     }`}
                   >
                     {activity.type === "success" ? "✓" : "i"}
@@ -341,9 +341,9 @@ function DashboardPage({ stats, activities, revenueTrends, loading }) {
             <Line
               type="monotone"
               dataKey="value"
-              stroke="#059669"
+              stroke="hsl(162 91% 24%)"
               strokeWidth={2}
-              dot={{ fill: "#059669" }}
+              dot={{ fill: "hsl(162 91% 24%)" }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -414,7 +414,7 @@ function UsersPage() {
           placeholder="Search by name or email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-gray-50 border border-gray-200 rounded px-4 py-2 outline-none focus:ring-2 focus:ring-green-500"
+          className="w-full bg-gray-50 border border-gray-200 rounded px-4 py-2 outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
 
@@ -423,7 +423,7 @@ function UsersPage() {
         {tabs.map((tab) => (
           <button
             key={tab}
-            className="px-4 py-2 font-medium text-gray-700 border-b-2 border-green-600 text-green-600 whitespace-nowrap"
+            className="px-4 py-2 font-medium text-gray-700 border-b-2 border-primary text-primary whitespace-nowrap"
           >
             {tab}
           </button>
@@ -434,7 +434,7 @@ function UsersPage() {
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden overflow-x-auto">
         {loading ? (
           <div className="p-12 flex justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
           <table className="w-full">
@@ -481,7 +481,7 @@ function UsersPage() {
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium ${
                           user.user_type === "locum"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-primary/10 text-primary"
                             : "bg-blue-100 text-blue-700"
                         }`}
                       >
@@ -492,12 +492,12 @@ function UsersPage() {
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
                         active
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <button className="text-green-600 hover:text-green-800 font-medium">View</button>
+                      <button className="text-primary hover:text-primary-light font-medium">View</button>
                     </td>
                   </tr>
                 ))
@@ -648,7 +648,7 @@ function FinancialReviewPage() {
                             )}
                         </td>
                         <td className="px-6 py-4 text-sm space-x-2">
-                            <Button size="sm" onClick={() => handleRelease(review.id)} className="bg-green-600 hover:bg-green-700">
+                            <Button size="sm" onClick={() => handleRelease(review.id)} className="bg-primary hover:bg-primary-light">
                                 Release
                             </Button>
                             <Button size="sm" variant="destructive" onClick={() => handleRefund(review.id)}>
@@ -682,7 +682,7 @@ function BookingsPage({ stats, bookingTrends }) {
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <p className="text-gray-600 text-sm">Total Bookings</p>
           <p className="text-3xl font-bold text-gray-900">{stats.totalBookings}</p>
-          <p className="text-xs text-green-600 mt-2">All time</p>
+          <p className="text-xs text-primary mt-2">All time</p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <p className="text-gray-600 text-sm">Active Bookings</p>
@@ -707,7 +707,7 @@ function BookingsPage({ stats, bookingTrends }) {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="value" fill="#059669" />
+            <Bar dataKey="value" fill="hsl(162 91% 24%)" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -791,7 +791,7 @@ function PaymentsPage({ stats, transactions }) {
                 <td className="px-6 py-4 text-sm text-gray-900">
                   £{tx.practicePayment}
                 </td>
-                <td className="px-6 py-4 text-sm text-green-600 font-medium">
+                <td className="px-6 py-4 text-sm text-primary font-medium">
                   £{tx.adminMargin.toFixed(0)}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-900">
