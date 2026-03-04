@@ -78,8 +78,9 @@ export default function PracticeDashboard() {
     }
   };
 
-  const handleLogout = () => {
-    navigate("/auth");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
   };
 
   return (

@@ -14,6 +14,7 @@ import { useLocumProfile } from "@/hooks/useLocumProfile";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { LocumSidebar as MobileSidebar } from "@/components/locum/LocumSidebar";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function LocumDashboard() {
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ export default function LocumDashboard() {
   const { profile, completionPercentage, isProfileComplete, uploadDocument } =
     useLocumProfile();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     navigate("/");
   };
 

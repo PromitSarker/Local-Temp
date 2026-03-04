@@ -26,6 +26,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminSettings from "./pages/admin/Settings";
 import { ChatWidget } from "./components/chat/ChatWidget";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -86,27 +87,61 @@ const App = () => (
               </ProtectedAdminRoute>
             }
           />
-          <Route path="/locum-dashboard/*" element={<LocumDashboard />} />
-          <Route path="/practice-dashboard" element={<PracticeDashboard />} />
+          <Route 
+            path="/locum-dashboard/*" 
+            element={
+              <ProtectedRoute userType="locum">
+                <LocumDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/practice-dashboard/*" 
+            element={
+              <ProtectedRoute userType="practice">
+                <PracticeDashboard />
+              </ProtectedRoute>
+            } 
+          />
           <Route
             path="/practice-dashboard/bookings"
-            element={<PracticeBookings />}
+            element={
+              <ProtectedRoute userType="practice">
+                <PracticeBookings />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/practice-dashboard/payments"
-            element={<PracticePayments />}
+            element={
+              <ProtectedRoute userType="practice">
+                <PracticePayments />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/practice-dashboard/find-locums"
-            element={<FindLocums />}
+            element={
+              <ProtectedRoute userType="practice">
+                <FindLocums />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/practice-dashboard/settings"
-            element={<PracticeSettings />}
+            element={
+              <ProtectedRoute userType="practice">
+                <PracticeSettings />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/practice-dashboard/messages"
-            element={<PracticeMessages />}
+            element={
+              <ProtectedRoute userType="practice">
+                <PracticeMessages />
+              </ProtectedRoute>
+            }
           />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

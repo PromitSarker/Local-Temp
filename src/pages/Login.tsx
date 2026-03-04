@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, ArrowLeft, Stethoscope, Building2 } from "lucide-react";
+import { Mail, Lock, ArrowLeft, Stethoscope, Building2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 type UserType = "locum" | "practice" | null;
@@ -20,6 +20,26 @@ const Login = () => {
   });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [initialCheck, setInitialCheck] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("user_type")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+        
+        if (profile) {
+          navigate(profile.user_type === "locum" ? "/locum-dashboard" : "/practice-dashboard");
+        }
+      }
+      setInitialCheck(false);
+    };
+    checkSession();
+  }, [navigate]);
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -154,6 +174,15 @@ const Login = () => {
       });
     }
   };
+
+  // Loading state for initial session check
+  if (initialCheck) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   // User type selection screen
   if (!selectedType) {
