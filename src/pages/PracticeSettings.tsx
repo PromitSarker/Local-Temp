@@ -35,6 +35,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { TeamTab } from "@/components/practice/settings/TeamTab";
 import { BillingTab } from "@/components/practice/settings/BillingTab";
 import { SecurityTab } from "@/components/practice/settings/SecurityTab";
+import { PracticeHeader } from "@/components/practice/PracticeHeader";
+
 import {
   Practice,
   TeamMember,
@@ -420,24 +422,12 @@ export default function PracticeSettings() {
       {/* Main Content */}
       <div className="flex-1 w-full min-w-0 md:ml-64 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <header className="sticky top-0 z-30 border-b border-border bg-card/80 backdrop-blur-sm px-4 md:px-8 py-4 flex items-center gap-4 flex-shrink-0">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <Menu className="w-5 h-5" />
-          </Button>
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">
-              Practice Settings
-            </h1>
-            <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground truncate">
-              Manage your practice information and preferences
-            </p>
-          </div>
-        </header>
+        <PracticeHeader
+          title="Practice Settings"
+          subtitle="Manage your practice information and preferences"
+          onMenuToggle={() => setMobileMenuOpen(true)}
+        />
+
 
         {/* Tabs */}
         <div className="sticky top-[65px] z-20 border-b border-border bg-card px-4 md:px-8 flex-shrink-0">

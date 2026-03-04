@@ -30,6 +30,8 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 
 import { usePracticeDashboard } from "@/hooks/usePracticeDashboard";
+import { PracticeHeader } from "@/components/practice/PracticeHeader";
+
 
 export default function PracticeDashboard() {
   const navigate = useNavigate();
@@ -37,26 +39,7 @@ export default function PracticeDashboard() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [showBookingPanel, setShowBookingPanel] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [initials, setInitials] = useState("PM");
 
-  useEffect(() => {
-    const getProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, practice_name')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (profile) {
-        const name = profile.practice_name || profile.full_name || 'Practice';
-        const inits = name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
-        setInitials(inits);
-      }
-    };
-    getProfile();
-  }, []);
 
   // Get booking dates for calendar highlighting
   const bookingDates = useMemo(() => {
@@ -96,30 +79,12 @@ export default function PracticeDashboard() {
 
       {/* Main Content */}
       <main className="md:ml-64 min-h-screen">
-        {/* Header */}
-        <header className="bg-background border-b border-border px-4 md:px-8 py-4 md:py-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-foreground">
-                Practice Dashboard
-              </h1>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Here's what's happening with your practice today
-              </p>
-            </div>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold flex-shrink-0 shadow-sm ring-2 ring-emerald-50">
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : initials}
-          </div>
-        </header>
+        <PracticeHeader
+          title="Practice Dashboard"
+          subtitle="Here's what's happening with your practice today"
+          onMenuToggle={() => setMobileMenuOpen(true)}
+        />
+
 
         <div className="p-4 md:p-8 space-y-4 md:space-y-6">
           {loading && (

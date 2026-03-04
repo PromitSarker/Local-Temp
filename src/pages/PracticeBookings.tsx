@@ -14,6 +14,9 @@ import { ReviewModal } from "@/components/ReviewModal";
 import { PaymentModal } from "@/components/practice/PaymentModal";
 import { useToast } from "@/hooks/use-toast";
 import { useTickets } from "@/hooks/useTickets";
+import { PracticeHeader } from "@/components/practice/PracticeHeader";
+
+
 
 type BookingStatus = "confirmed" | "pending" | "completed" | "cancelled" | "rejected";
 
@@ -323,29 +326,12 @@ export default function PracticeBookings() {
       </Sheet>
 
       <main className="md:ml-64 min-h-screen">
-        <header className="bg-background border-b border-border px-4 md:px-8 py-4 md:py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <Menu className="w-5 h-5" />
-            </Button>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold text-foreground">
-                Booking Management
-              </h1>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Manage and track all your locum bookings
-              </p>
-            </div>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold flex-shrink-0">
-            SD
-          </div>
-        </header>
+        <PracticeHeader
+          title="Booking Management"
+          subtitle="Manage and track all your locum bookings"
+          onMenuToggle={() => setMobileMenuOpen(true)}
+        />
+
 
         <section className="p-4 md:p-8 space-y-4 md:space-y-6">
           <StatCards />

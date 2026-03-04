@@ -20,6 +20,8 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useMessages } from "@/hooks/useMessages";
 import { supabase } from "@/integrations/supabase/client";
 import { format, isToday, isYesterday } from "date-fns";
+import { PracticeHeader } from "@/components/practice/PracticeHeader";
+
 
 function formatConversationTime(iso: string) {
   const d = new Date(iso);
@@ -148,22 +150,12 @@ export default function PracticeMessages() {
 
       <main className="flex-1 md:ml-64 flex flex-col h-screen overflow-hidden">
         {/* Page Header */}
-        <div className="px-4 md:px-8 py-4 md:py-6 border-b border-border shrink-0 flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <Menu className="w-5 h-5" />
-          </Button>
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold text-foreground">Messages</h1>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Communicate with your locums
-            </p>
-          </div>
-        </div>
+        <PracticeHeader
+          title="Messages"
+          subtitle="Communicate with your locums"
+          onMenuToggle={() => setMobileMenuOpen(true)}
+        />
+
 
         {/* Messaging Content */}
         <div className="flex-1 overflow-hidden p-4 md:p-6">

@@ -1,6 +1,8 @@
 import { Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { NotificationPopover } from "@/components/NotificationPopover";
+
 
 interface LocumHeaderProps {
   userName: string;
@@ -33,11 +35,9 @@ export function LocumHeader({ userName, onMenuToggle }: LocumHeaderProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
-          </Button>
+          <NotificationPopover viewAllPath="/locum-dashboard/notifications" />
           <Avatar className="h-9 w-9">
+
             <AvatarFallback className="bg-primary text-primary-foreground text-sm">
               {initials}
             </AvatarFallback>
