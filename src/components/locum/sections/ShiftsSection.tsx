@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import {
   MapPin,
   AlertCircle,
@@ -8,12 +10,14 @@ import {
   Download,
   Loader2,
   MessageSquare,
+  Info,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { format } from "date-fns";
 import { useShifts } from "@/hooks/useShifts";
 import { useToast } from "@/hooks/use-toast";
+
 
 interface ShiftsSectionProps {
   isProfileComplete: boolean;
@@ -23,6 +27,14 @@ export function ShiftsSection({ isProfileComplete }: ShiftsSectionProps) {
   const [activeTab, setActiveTab] = useState<"requests" | "upcoming" | "history">("requests");
   const { requests, upcomingShifts, completedShifts, loading, acceptBooking, declineBooking, requestRefund } = useShifts();
   const { toast } = useToast();
+
+  // Dispute dialog state
+  const [disputeBookingId, setDisputeBookingId] = useState<string | null>(null);
+  const [disputeReason, setDisputeReason] = useState("");
+  const [isSubmittingDispute, setIsSubmittingDispute] = useState(false);
+
+  // View Details dialog state
+  const [detailsBooking, setDetailsBooking] = useState<any | null>(null);
 
   const handleAccept = async (bookingId: string) => {
     try {
@@ -56,25 +68,33 @@ export function ShiftsSection({ isProfileComplete }: ShiftsSectionProps) {
     }
   };
 
-  const handleRequestRefund = async (bookingId: string) => {
-    const reason = prompt("Please enter the reason for the dispute/refund request:");
-    if (!reason) return;
+  const handleRequestRefund = (bookingId: string) => {
+    setDisputeBookingId(bookingId);
+    setDisputeReason("");
+  };
 
+  const handleSubmitDispute = async () => {
+    if (!disputeBookingId || !disputeReason.trim()) return;
+    setIsSubmittingDispute(true);
     try {
-      const { error } = await requestRefund(bookingId, reason);
-      if (error) throw error;
+      const { error } = await requestRefund(disputeBookingId, disputeReason.trim());
+      if (error) throw new Error(String(error));
       toast({
         title: "Dispute Opened",
         description: "The admin has been notified and will review your request.",
       });
-    } catch (error) {
+      setDisputeBookingId(null);
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to open dispute.",
+        description: error?.message || "Failed to open dispute.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmittingDispute(false);
     }
   };
+
 
   if (!isProfileComplete) {
     return (
@@ -113,6 +133,57 @@ export function ShiftsSection({ isProfileComplete }: ShiftsSectionProps) {
 
   return (
     <div className="space-y-6">
+      {/* Dispute Dialog */}
+      <Dialog open={!!disputeBookingId} onOpenChange={(open) => !open && setDisputeBookingId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Open a Dispute</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground mb-2">
+            Describe the reason for your dispute. An admin will review this and contact both parties.
+          </p>
+          <Textarea
+            placeholder="Describe the issue in detail..."
+            value={disputeReason}
+            onChange={(e) => setDisputeReason(e.target.value)}
+            rows={4}
+          />
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setDisputeBookingId(null)}>Cancel</Button>
+            <Button
+              variant="destructive"
+              onClick={handleSubmitDispute}
+              disabled={!disputeReason.trim() || isSubmittingDispute}
+            >
+              {isSubmittingDispute ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              Submit Dispute
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Details Dialog */}
+      {detailsBooking && (
+        <Dialog open={!!detailsBooking} onOpenChange={(open) => !open && setDetailsBooking(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Shift Details</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between"><span className="text-muted-foreground">Practice</span><span className="font-medium">{detailsBooking.practice?.name}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Location</span><span className="font-medium">{detailsBooking.practice?.address || "N/A"}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{format(new Date(detailsBooking.date), "EEE, d MMM yyyy")}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Time</span><span className="font-medium">{detailsBooking.start_time?.slice(0,5)} – {detailsBooking.end_time?.slice(0,5)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Rate</span><span className="font-medium">£{detailsBooking.hourly_rate}/hr</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="font-medium capitalize">{detailsBooking.status}</span></div>
+            </div>
+            <DialogFooter className="mt-4">
+              <Button variant="outline" onClick={() => setDetailsBooking(null)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
       <div>
         <h2 className="text-2xl font-bold">Shift Management</h2>
         <p className="text-muted-foreground mt-1">
@@ -280,8 +351,9 @@ export function ShiftsSection({ isProfileComplete }: ShiftsSectionProps) {
                   </div>
 
                   <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" className="flex-1 md:flex-none">
-                      View Details
+                    <Button variant="outline" className="flex-1 md:flex-none" onClick={() => setDetailsBooking(booking)}>
+                       <Info className="w-4 h-4 mr-2" />
+                       View Details
                     </Button>
                     <Button 
                       variant="outline" 

@@ -8,7 +8,7 @@ export const Navigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
-  const isHashActive = (hash: string) => location.hash === hash;
+  const isHashActive = (hash: string) => location.hash === `#${hash}`;
 
   const navLinks = [
     { path: "/", label: "Home", type: "route" },

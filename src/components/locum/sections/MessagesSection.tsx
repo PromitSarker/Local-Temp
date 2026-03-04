@@ -262,7 +262,7 @@ export function MessagesSection() {
                   <h3 className="font-semibold text-gray-900 text-sm">
                     {selectedName}
                   </h3>
-                  <p className="text-xs text-muted-foreground">Dental Practice</p>
+                  <p className="text-xs text-muted-foreground">Local Smile Connect</p>
                 </div>
               </div>
 

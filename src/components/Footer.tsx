@@ -5,7 +5,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-foreground text-background py-12 pb-32">
+    <footer className="bg-foreground text-background py-12 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
@@ -54,13 +54,12 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal */}
           <div>
             <h4 className="font-bold mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a
-                  href="#"
+                  href="/#contact"
                   className="text-background/70 hover:text-background transition-colors"
                 >
                   Privacy Policy
@@ -68,7 +67,7 @@ export const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/#contact"
                   className="text-background/70 hover:text-background transition-colors"
                 >
                   Terms of Service
@@ -76,44 +75,19 @@ export const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/#contact"
                   className="text-background/70 hover:text-background transition-colors"
                 >
                   Cookie Policy
                 </a>
               </li>
             </ul>
+            <p className="text-xs text-background/40 mt-3">Contact us for legal inquiries.</p>
           </div>
 
-          {/* Social */}
           <div>
             <h4 className="font-bold mb-4">Follow Us</h4>
-            <div className="flex gap-3">
-              <a
-                href="#"
-                className="w-10 h-10 bg-background/10 hover:bg-primary rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-background/10 hover:bg-primary rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-background/10 hover:bg-primary rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-background/10 hover:bg-primary rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-            </div>
+            <p className="text-background/50 text-sm">Coming soon! We'll be on social media shortly.</p>
           </div>
         </div>
 

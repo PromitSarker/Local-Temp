@@ -17,11 +17,13 @@ export const Hero = () => {
   const navigate = useNavigate();
   const [location, setLocation] = useState("");
   const [role, setRole] = useState("");
+  const [date, setDate] = useState("");
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (location) params.append("city", location);
     if (role) params.append("role", role);
+    if (date) params.append("date", date);
     navigate(`/search?${params.toString()}`);
   };
 
@@ -68,6 +70,8 @@ export const Hero = () => {
                   <Input 
                     type="date" 
                     className="flex-1 border-0 bg-transparent focus-visible:ring-0"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
                   />
                   <Button size="default" className="shrink-0" onClick={handleSearch}>
                     <Search className="w-4 h-4 mr-2" />
@@ -78,7 +82,7 @@ export const Hero = () => {
 
               <p className="text-sm text-muted-foreground">
                 Already have an account?{" "}
-                <Link to="/auth" className="text-primary font-medium hover:underline">
+                <Link to="/login" className="text-primary font-medium hover:underline">
                   Sign in
                 </Link>
               </p>

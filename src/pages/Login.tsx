@@ -157,7 +157,7 @@ const Login = () => {
       return;
     }
 
-    const redirectUrl = `${window.location.origin}/auth/callback?type=${selectedType}`;
+    const redirectUrl = `${import.meta.env.VITE_APP_URL || window.location.origin}/auth/callback?type=${selectedType}`;
     
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
