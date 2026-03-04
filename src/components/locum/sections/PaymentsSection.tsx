@@ -225,16 +225,18 @@ export function PaymentsSection({ isProfileComplete }: PaymentsSectionProps) {
                 </Card>
             )}
             
-            <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4 flex items-start gap-3 mt-4">
-                <AlertCircle className="w-5 h-5 text-emerald-600 mt-0.5" />
-                <div className="text-sm text-emerald-800">
-                    <p className="font-semibold">Stripe payouts are active</p>
-                    <p className="mt-1">Detailed transaction history and tax documents are also available through your connected Stripe account.</p>
-                    <Button variant="link" className="p-0 h-auto text-emerald-700 font-bold mt-2" onClick={handleConnectStripe}>
-                        Go to Stripe Dashboard →
-                    </Button>
-                </div>
-            </div>
+            {stripeConnected && (
+              <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-4 flex items-start gap-3 mt-4">
+                  <AlertCircle className="w-5 h-5 text-emerald-600 mt-0.5" />
+                  <div className="text-sm text-emerald-800">
+                      <p className="font-semibold">Stripe payouts are active</p>
+                      <p className="mt-1">Detailed transaction history and tax documents are also available through your connected Stripe account.</p>
+                      <Button variant="link" className="p-0 h-auto text-emerald-700 font-bold mt-2" onClick={handleConnectStripe}>
+                          Go to Stripe Dashboard →
+                      </Button>
+                  </div>
+              </div>
+            )}
         </TabsContent>
         
         <TabsContent value="settings" className="space-y-6">

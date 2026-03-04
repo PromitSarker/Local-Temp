@@ -4,8 +4,10 @@ import { PracticeSidebar } from "@/components/practice/PracticeSidebar";
 import { BookingCard } from "@/components/practice/BookingCard";
 import { StatCards } from "@/components/practice/StatCards";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { Search, Download, Calendar as CalendarIcon, Menu } from "lucide-react";
+import { Search, Download, Calendar as CalendarIcon, Menu, Loader2 } from "lucide-react";
 import { isSameDay, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -15,6 +17,7 @@ import { PaymentModal } from "@/components/practice/PaymentModal";
 import { useToast } from "@/hooks/use-toast";
 import { useTickets } from "@/hooks/useTickets";
 import { PracticeHeader } from "@/components/practice/PracticeHeader";
+
 
 
 
@@ -65,6 +68,12 @@ export default function PracticeBookings() {
   const { toast } = useToast();
   const { createTicket } = useTickets();
 
+  // Refund/Dispute dialog state
+  const [refundBookingId, setRefundBookingId] = useState<string | null>(null);
+  const [refundReason, setRefundReason] = useState("");
+  const [isSubmittingRefund, setIsSubmittingRefund] = useState(false);
+
+
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -104,9 +113,12 @@ export default function PracticeBookings() {
         const formattedBookings: PracticeBooking[] = (data || []).map((booking: any) => {
           const [sh, sm] = booking.start_time.split(':').map(Number);
           const [eh, em] = booking.end_time.split(':').map(Number);
-          const durationMins = (eh * 60 + em) - (sh * 60 + sm);
-          const hours = durationMins > 0 ? durationMins / 60 : 0;
+          let durationMins = (eh * 60 + em) - (sh * 60 + sm);
+          // Handle overnight shifts (e.g. 22:00 - 02:00)
+          if (durationMins < 0) durationMins += 24 * 60;
+          const hours = durationMins / 60;
           const cost = hours * booking.hourly_rate;
+
           
           return {
             id: booking.id,
@@ -218,7 +230,7 @@ export default function PracticeBookings() {
   };
 
   const handleLogout = () => {
-    navigate("/auth");
+    navigate("/login");
   };
 
   const handleMessage = (userId: string, userName: string) => {
@@ -262,32 +274,38 @@ export default function PracticeBookings() {
     }
   };
 
-  const handleRequestRefund = async (bookingId: string) => {
-    const reason = prompt("Please enter the reason for the refund request:");
-    if (!reason) return;
+  const handleRequestRefund = (bookingId: string) => {
+    setRefundBookingId(bookingId);
+    setRefundReason("");
+  };
 
+  const handleSubmitRefund = async () => {
+    if (!refundBookingId || !refundReason.trim()) return;
+    setIsSubmittingRefund(true);
     try {
-        const { error } = await createTicket(bookingId, "Refund Request", reason);
-        if (error) throw error;
+        const { error } = await createTicket(refundBookingId, "Refund Request", refundReason.trim());
+        if (error) throw new Error(String(error));
 
         toast({
             title: "Refund Requested",
             description: "The admin has been notified and will review your request.",
         });
 
-        setBookings(prev => prev.map(b => 
-            b.id === bookingId ? { ...b, paymentStatus: 'disputed' } : b
+        setBookings(prev => prev.map(b =>
+            b.id === refundBookingId ? { ...b, paymentStatus: 'disputed' } : b
         ));
-
+        setRefundBookingId(null);
     } catch (error: any) {
-        console.error('Error requesting refund:', error);
         toast({
             title: "Error",
             description: error.message || "Failed to request refund",
             variant: "destructive"
         });
+    } finally {
+        setIsSubmittingRefund(false);
     }
   };
+
   
   const handlePayNow = (booking: PracticeBooking) => {
     // Calculate total amount
@@ -316,6 +334,35 @@ export default function PracticeBookings() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Refund Request Dialog */}
+      <Dialog open={!!refundBookingId} onOpenChange={(open) => !open && setRefundBookingId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request a Refund</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground mb-2">
+            Describe the reason for your refund request. An admin will review this and contact both parties.
+          </p>
+          <Textarea
+            placeholder="Describe the issue in detail..."
+            value={refundReason}
+            onChange={(e) => setRefundReason(e.target.value)}
+            rows={4}
+          />
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setRefundBookingId(null)}>Cancel</Button>
+            <Button
+              variant="destructive"
+              onClick={handleSubmitRefund}
+              disabled={!refundReason.trim() || isSubmittingRefund}
+            >
+              {isSubmittingRefund ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              Submit Request
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <PracticeSidebar onLogout={handleLogout} />
 
       {/* Mobile Menu */}
@@ -324,6 +371,7 @@ export default function PracticeBookings() {
           <PracticeSidebar onLogout={handleLogout} isMobileSheet={true} />
         </SheetContent>
       </Sheet>
+
 
       <main className="md:ml-64 min-h-screen">
         <PracticeHeader
